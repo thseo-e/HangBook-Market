@@ -1,4 +1,4 @@
-package org.spectra.hangbookmarket.user.application;
+package org.spectra.hangbookmarket.user.api;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class LoginParam
+public class LoginRequest
 {
-    private String id;
+    private String userId;
 
     private String passwd;
 }
