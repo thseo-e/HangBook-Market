@@ -1,4 +1,4 @@
-package org.spectra.hangbookmarket.user.api;
+package org.spectra.hangbookmarket.user.api.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

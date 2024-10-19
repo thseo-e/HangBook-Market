@@ -1,7 +1,10 @@
 package org.spectra.hangbookmarket.user.service;
 
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
-import org.spectra.hangbookmarket.user.api.LoginRequest;
+import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
+import org.spectra.hangbookmarket.user.api.dto.UserApiDto;
 import org.spectra.hangbookmarket.user.domain.User;
 import org.spectra.hangbookmarket.user.repository.UserRepository;
 import org.spectra.hangbookmarket.user.thirdparty.LdapService;
@@ -14,11 +17,22 @@ public class LoginService
     private final LdapService ldap;
     private final UserRepository userRepository;
 
-    public String login(LoginRequest loginRequest)
+    public UserApiDto login(LoginRequest loginRequest)
     {
-        User user = userRepository.findByNameAndPassword(loginRequest.getUserId(), loginRequest.getPasswd());
+        Optional<User> user = userRepository.findByNameAndPassword(loginRequest.getUserId(), loginRequest.getPasswd());
 
-        return user.getName();
+        if (user.isPresent())
+        {
+            return UserApiDto.builder()
+                .user(user.get())
+                .build();
+        }
+
+        User newUser = userRepository.save(User.createUser(loginRequest));
+
+        return UserApiDto.builder()
+            .user(newUser)
+            .build();
     }
 
     public boolean loginLdap(String id, String decodedPasswd)

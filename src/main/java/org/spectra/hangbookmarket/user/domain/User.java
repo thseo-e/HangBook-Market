@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.spectra.hangbookmarket.user.api.LoginRequest;
+import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
 
 @Entity
 @Getter

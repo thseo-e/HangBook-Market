@@ -4,6 +4,8 @@ import java.util.Base64;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
+import org.spectra.hangbookmarket.user.api.dto.UserApiDto;
 import org.spectra.hangbookmarket.user.service.LoginService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +21,19 @@ public class LoginApiController
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest, HttpSession session)
     {
-        String userName = loginService.login(loginRequest);
+        UserApiDto dto = loginService.login(loginRequest);
 
-        session.setAttribute("userName", userName);
+        if(dto == null)
+        {
+            return "Login Failed";
+        }
+        else
+        {
+            session.setAttribute("userName", dto.getName());
+            session.setAttribute("userId", dto.getId());
 
-        return userName.isEmpty() ? "Fail" : "Success";
+            return "Login Success";
+        }
     }
 
     @PostMapping("/login/ldap")
