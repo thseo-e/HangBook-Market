@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
-import org.spectra.hangbookmarket.user.domain.User;
+import org.spectra.hangbookmarket.user.domain.Users;
 import org.spectra.hangbookmarket.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,13 +32,13 @@ class LoginServiceTest
     @Test
     void createUser()
     {
-        User user = User.createUser(request);
+        Users users = Users.createUser(request);
 
         // when
-        User savedUser = userRepository.save(user);
+        Users savedUsers = userRepository.save(users);
 
         // then
-        assertThat(savedUser.getName()).isEqualTo(request.getUserId());
+        assertThat(savedUsers.getName()).isEqualTo(request.getUserId());
     }
 
     @DisplayName("Login 실패")
@@ -51,7 +51,7 @@ class LoginServiceTest
         requestFail.setPasswd("test");
 
         // when
-        Optional<User> user = userRepository.findByNameAndPassword(requestFail.getUserId(), requestFail.getPasswd());
+        Optional<Users> user = userRepository.findByNameAndPassword(requestFail.getUserId(), requestFail.getPasswd());
 
         // then
         assertThat(user.isPresent()).isFalse();
@@ -62,11 +62,11 @@ class LoginServiceTest
     void testMethodNameHere()
     {
         // given
-        User createUser = User.createUser(request);
+        Users createUser = Users.createUser(request);
         userRepository.save(createUser);
 
         // when
-        Optional<User> user = userRepository.findByNameAndPassword(request.getUserId(), request.getPasswd());
+        Optional<Users> user = userRepository.findByNameAndPassword(request.getUserId(), request.getPasswd());
 
         // then
         assertThat(user.isPresent()).isTrue();

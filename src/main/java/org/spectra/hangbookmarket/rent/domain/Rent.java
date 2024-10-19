@@ -1,6 +1,5 @@
 package org.spectra.hangbookmarket.rent.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -10,13 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.spectra.hangbookmarket.book.domain.Book;
-import org.spectra.hangbookmarket.user.domain.User;
+import org.spectra.hangbookmarket.user.domain.Users;
 
 @Entity
 @Getter
@@ -34,7 +32,7 @@ public class Rent
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users users;
 
     private LocalDateTime rentDate;
 

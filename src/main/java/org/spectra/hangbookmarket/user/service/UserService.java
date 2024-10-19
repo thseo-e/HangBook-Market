@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.spectra.hangbookmarket.user.api.dto.UserApiDto;
-import org.spectra.hangbookmarket.user.domain.User;
+import org.spectra.hangbookmarket.user.domain.Users;
 import org.spectra.hangbookmarket.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +16,15 @@ public class UserService
 
     public UserApiDto getUserInfo(Long userId)
     {
-        Optional<User> user = userRepository.findById(userId);
+        Users user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 
         return UserApiDto.builder()
-            .user(user.get())
+            .users(user)
             .build();
     }
 
+    public Users findUser(Long userId)
+    {
+        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+    }
 }

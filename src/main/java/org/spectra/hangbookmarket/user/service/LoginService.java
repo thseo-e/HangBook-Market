@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
 import org.spectra.hangbookmarket.user.api.dto.UserApiDto;
-import org.spectra.hangbookmarket.user.domain.User;
+import org.spectra.hangbookmarket.user.domain.Users;
 import org.spectra.hangbookmarket.user.repository.UserRepository;
 import org.spectra.hangbookmarket.user.thirdparty.LdapService;
 import org.springframework.stereotype.Service;
@@ -19,19 +19,19 @@ public class LoginService
 
     public UserApiDto login(LoginRequest loginRequest)
     {
-        Optional<User> user = userRepository.findByNameAndPassword(loginRequest.getUserId(), loginRequest.getPasswd());
+        Optional<Users> user = userRepository.findByNameAndPassword(loginRequest.getUserId(), loginRequest.getPasswd());
 
         if (user.isPresent())
         {
             return UserApiDto.builder()
-                .user(user.get())
+                .users(user.get())
                 .build();
         }
 
-        User newUser = userRepository.save(User.createUser(loginRequest));
+        Users newUsers = userRepository.save(Users.createUser(loginRequest));
 
         return UserApiDto.builder()
-            .user(newUser)
+            .users(newUsers)
             .build();
     }
 

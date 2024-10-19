@@ -14,7 +14,7 @@ import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User
+public class Users
 {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -31,16 +31,16 @@ public class User
     private String ldapId;
 
     @Builder
-    public User(String name, String password, String ldapId)
+    public Users(String name, String password, String ldapId)
     {
         this.name = name;
         this.password = password;
         this.ldapId = ldapId;
     }
 
-    public static User createUser(LoginRequest request)
+    public static Users createUser(LoginRequest request)
     {
-        return User.builder()
+        return Users.builder()
             .ldapId(request.getUserId())
             .name(request.getUserId())
             .password(request.getPasswd())

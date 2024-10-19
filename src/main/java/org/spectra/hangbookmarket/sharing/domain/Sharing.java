@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.spectra.hangbookmarket.user.domain.User;
+import org.spectra.hangbookmarket.user.domain.Users;
 
 @Entity
 @Getter
@@ -21,7 +21,7 @@ public class Sharing
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User createUser;
+    private Users createUser;
 
 
     @OneToMany(mappedBy = "sharing")

@@ -1,0 +1,1 @@
+INSERT INTO users (user_id, name, password, ldap_id) VALUES (1, 'admin', 'admin', 'admin');

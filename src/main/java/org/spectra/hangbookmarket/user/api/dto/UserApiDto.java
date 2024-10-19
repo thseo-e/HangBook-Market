@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.spectra.hangbookmarket.user.domain.User;
+import org.spectra.hangbookmarket.user.domain.Users;
 
 @Getter
 @Setter
@@ -20,11 +20,11 @@ public class UserApiDto
     private String ldapId;
 
     @Builder
-    public UserApiDto(User user)
+    public UserApiDto(Users users)
     {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.password = user.getPassword();
-        this.ldapId = user.getLdapId();
+        this.id = users.getId();
+        this.name = users.getName();
+        this.password = users.getPassword();
+        this.ldapId = users.getLdapId();
     }
 }

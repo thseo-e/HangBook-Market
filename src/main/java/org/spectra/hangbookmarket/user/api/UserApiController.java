@@ -5,15 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.spectra.hangbookmarket.user.api.dto.UserApiDto;
 import org.spectra.hangbookmarket.user.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class userApiController
+public class UserApiController
 {
     private final UserService userService;
 
