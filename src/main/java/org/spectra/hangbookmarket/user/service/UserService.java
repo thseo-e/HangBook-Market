@@ -16,7 +16,9 @@ public class UserService
 
     public UserApiDto getUserInfo(Long userId)
     {
-        Users user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+        Users user = userRepository.findById(userId).orElseThrow(() ->
+            new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
 
         return UserApiDto.builder()
             .users(user)
@@ -25,6 +27,8 @@ public class UserService
 
     public Users findUser(Long userId)
     {
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+        return userRepository.findById(userId).orElseThrow(() ->
+            new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
     }
 }

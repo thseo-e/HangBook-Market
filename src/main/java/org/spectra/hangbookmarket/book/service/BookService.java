@@ -1,13 +1,17 @@
 package org.spectra.hangbookmarket.book.service;
 
 import lombok.RequiredArgsConstructor;
-import org.spectra.hangbookmarket.book.api.BookCreateRequest;
+import org.spectra.hangbookmarket.book.api.dto.BookApiResponse;
+import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
+import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.book.domain.Book;
 import org.spectra.hangbookmarket.book.repository.BookRepository;
 import org.spectra.hangbookmarket.user.domain.Users;
 import org.spectra.hangbookmarket.user.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class BookService
@@ -18,35 +22,44 @@ public class BookService
 
     //Book의 CRUD를 담당하는 서비스를 구현해주세요.
 
-    public String createBook(BookCreateRequest bookCreateRequest)
+    public Long createBook(CreateBookRequest createBookRequest)
     {
-        Users user = userService.findUser(bookCreateRequest.getUserId());
+        Users user = userService.findUser(createBookRequest.getUserId());
 
-        Book savedBook = bookRepository.save(Book.createBook(bookCreateRequest, user));
+        Book savedBook = bookRepository.save(Book.createBook(createBookRequest, user));
 
-        return savedBook.getName();
+        return savedBook.getId();
     }
 
-    public Book getBook(Long bookId)
+    @Transactional(readOnly = true)
+    public BookApiResponse getBook(Long bookId)
     {
-        return bookRepository.findById(bookId).orElse(null);
+        Book book = bookRepository.findById(bookId).orElseThrow(() ->
+            new IllegalArgumentException("해당 책이 존재하지 않습니다.")
+        );
+
+        return BookApiResponse.of(book);
     }
 
-    public Book updateBook(Long bookId, Book book)
+    public Long updateBook(UpdateBookRequest updateBookRequest)
     {
-        Book findBook = bookRepository.findById(bookId).orElse(null);
+        Book findBook = bookRepository.findById(updateBookRequest.getId()).orElseThrow(() ->
+            new IllegalArgumentException("해당 책이 존재하지 않습니다.")
+        );
 
-        if(findBook == null)
-        {
-            return null;
-        }
+        Users updateUser = userService.findUser(updateBookRequest.getUserId());
 
-        return bookRepository.save(findBook);
+        findBook.updateBook(updateBookRequest, updateUser);
+
+        return findBook.getId();
     }
 
     public void deleteBook(Long bookId)
     {
-        bookRepository.deleteById(bookId);
+        bookRepository.findById(bookId).ifPresentOrElse(
+            bookRepository::delete, () -> {
+            throw new IllegalArgumentException("해당 책이 존재하지 않습니다.");
+        });
     }
 
 

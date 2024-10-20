@@ -1,6 +1,7 @@
 package org.spectra.hangbookmarket.rent.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,9 +28,8 @@ public class Rent
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @OneToMany(mappedBy = "rent")
+    private List<Book> book;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -37,6 +38,4 @@ public class Rent
     private LocalDateTime rentDate;
 
     private LocalDateTime dueDate;
-
-
 }
