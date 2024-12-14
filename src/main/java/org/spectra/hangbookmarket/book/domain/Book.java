@@ -1,6 +1,7 @@
 package org.spectra.hangbookmarket.book.domain;
 
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,51 +32,59 @@ public class Book
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "create_user_id")
-    private Users createUser;
+    private Users createdUser;
 
-    @Column(name = "create_date")
-    private LocalDateTime createDate;
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "update_user_id")
-    private Users updateUser;
+    private Users updatedUser;
 
-    @Column(name = "update_date")
-    private LocalDateTime updateDate;
+    @Column(name = "updated_date")
+    private LocalDateTime updatedDate;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private BookStatus status;
 
     @Builder
-    protected Book(Long id, String name, Users createUser, LocalDateTime createDate, Users updateUser, LocalDateTime updateDate, BookStatus status)
+    private Book(Long id, String name, Users createdUser, LocalDateTime createdDate, Users updatedUser, LocalDateTime updatedDate, BookStatus status)
     {
         this.id = id;
         this.name = name;
-        this.createUser = createUser;
-        this.createDate = createDate;
-        this.updateUser = updateUser;
-        this.updateDate = updateDate;
+        this.createdUser = createdUser;
+        this.createdDate = createdDate;
+        this.updatedUser = updatedUser;
+        this.updatedDate = updatedDate;
         this.status = status;
     }
 
-    public static Book createBook(CreateBookRequest createBookRequest, Users createUser)
+    public static Book createBook(CreateBookRequest createBookRequest, Users createdUser)
     {
         return Book.builder()
             .name(createBookRequest.getName())
-            .createUser(createUser)
-            .createDate(LocalDateTime.now())
-            .updateUser(createUser)
-            .updateDate(LocalDateTime.now())
+            .createdUser(createdUser)
+            .createdDate(LocalDateTime.now())
+            .updatedUser(createdUser)
+            .updatedDate(LocalDateTime.now())
             .status(BookStatus.AVAILABLE)
             .build();
     }
 
-    public void updateBook(UpdateBookRequest request, Users updateUser)
+
+    public void updateBook(UpdateBookRequest request, Users updatedUser)
     {
         this.name = request.getName();
-        this.updateUser = updateUser;
-        this.updateDate = LocalDateTime.now();
+        this.updatedUser = updatedUser;
+        this.updatedDate = LocalDateTime.now();
         this.status = request.getStatus();
     }
+
+    public void updateStatus(BookStatus bookStatus)
+    {
+        this.status = bookStatus;
+    }
+
+
 }

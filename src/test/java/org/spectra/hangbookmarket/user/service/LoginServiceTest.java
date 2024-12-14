@@ -30,9 +30,9 @@ class LoginServiceTest
 
     @DisplayName("user 생성")
     @Test
-    void createUser()
+    void createdUser()
     {
-        Users users = Users.createUser(request);
+        Users users = Users.createdUser(request);
 
         // when
         Users savedUsers = userRepository.save(users);
@@ -62,8 +62,8 @@ class LoginServiceTest
     void testMethodNameHere()
     {
         // given
-        Users createUser = Users.createUser(request);
-        userRepository.save(createUser);
+        Users createdUser = Users.createdUser(request);
+        userRepository.save(createdUser);
 
         // when
         Optional<Users> user = userRepository.findByNameAndPassword(request.getUserId(), request.getPasswd());

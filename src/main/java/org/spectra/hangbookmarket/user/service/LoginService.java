@@ -28,7 +28,7 @@ public class LoginService
                 .build();
         }
 
-        Users newUsers = userRepository.save(Users.createUser(loginRequest));
+        Users newUsers = userRepository.save(Users.createdUser(loginRequest));
 
         return UserApiDto.builder()
             .users(newUsers)

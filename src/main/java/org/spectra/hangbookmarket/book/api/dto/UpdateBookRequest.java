@@ -18,7 +18,7 @@ public class UpdateBookRequest
 
     private Long userId;
 
-    private LocalDateTime createDate;
+    private LocalDateTime createdDate;
 
     private BookStatus status;
 }

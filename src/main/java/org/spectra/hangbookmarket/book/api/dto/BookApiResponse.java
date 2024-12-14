@@ -18,31 +18,31 @@ public class BookApiResponse
 
     private String name;
 
-    private Long createUserId;
+    private Long createdUserId;
 
-    private String createUserName;
+    private String createdUserName;
 
-    private LocalDateTime createDate;
+    private LocalDateTime createdDate;
 
-    private Long updateUserId;
+    private Long updatedUserId;
 
     private String updatedUserName;
 
-    private LocalDateTime updateDate;
+    private LocalDateTime updatedDate;
 
     private BookStatus status;
 
     @Builder
-    public BookApiResponse(Long id, String name, Long createUserId, String createUserName, LocalDateTime createDate, Long updateUserId, String updatedUserName, LocalDateTime updateDate, BookStatus status)
+    public BookApiResponse(Long id, String name, Long createdUserId, String createdUserName, LocalDateTime createdDate, Long updatedUserId, String updatedUserName, LocalDateTime updatedDate, BookStatus status)
     {
         this.id = id;
         this.name = name;
-        this.createUserId = createUserId;
-        this.createUserName = createUserName;
-        this.createDate = createDate;
-        this.updateUserId = updateUserId;
+        this.createdUserId = createdUserId;
+        this.createdUserName = createdUserName;
+        this.createdDate = createdDate;
+        this.updatedUserId = updatedUserId;
         this.updatedUserName = updatedUserName;
-        this.updateDate = updateDate;
+        this.updatedDate = updatedDate;
         this.status = status;
     }
 
@@ -51,12 +51,12 @@ public class BookApiResponse
         return BookApiResponse.builder()
                 .id(book.getId())
                 .name(book.getName())
-                .createUserId(book.getCreateUser().getId())
-                .createUserName(book.getCreateUser().getName())
-                .createDate(book.getCreateDate())
-                .updateUserId(book.getUpdateUser().getId())
-                .updatedUserName(book.getUpdateUser().getName())
-                .updateDate(book.getUpdateDate())
+                .createdUserId(book.getCreatedUser().getId())
+                .createdUserName(book.getCreatedUser().getName())
+                .createdDate(book.getCreatedDate())
+                .updatedUserId(book.getUpdatedUser().getId())
+                .updatedUserName(book.getUpdatedUser().getName())
+                .updatedDate(book.getUpdatedDate())
                 .status(book.getStatus())
                 .build();
     }

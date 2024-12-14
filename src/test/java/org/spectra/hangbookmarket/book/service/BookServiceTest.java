@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.book.domain.Book;
-import org.spectra.hangbookmarket.book.repository.BookRepository;
+import org.spectra.hangbookmarket.book.repository.BookJpaRepository;
 import org.spectra.hangbookmarket.user.domain.Users;
 import org.spectra.hangbookmarket.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 class BookServiceTest
 {
     @Autowired
-    private BookRepository bookRepository;
+    private BookJpaRepository bookJpaRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -37,7 +37,7 @@ class BookServiceTest
     }
 
     @BeforeEach
-    void createUser()
+    void createdUser()
     {
         Users user = Users.builder()
             .name("test")
@@ -58,7 +58,7 @@ class BookServiceTest
         // when
         Book book = Book.createBook(createBookRequest, user);
 
-        Book savedBook = bookRepository.save(book);
+        Book savedBook = bookJpaRepository.save(book);
 
         // then
         assertThat(savedBook.getName()).isEqualTo(createBookRequest.getName());
@@ -75,7 +75,7 @@ class BookServiceTest
         createBookRequest.setName(null);
         Book book = Book.createBook(createBookRequest, user);
 
-        assertThrows(DataIntegrityViolationException.class, () -> bookRepository.save(book), "책 등록 성공");
+        assertThrows(DataIntegrityViolationException.class, () -> bookJpaRepository.save(book), "책 등록 성공");
 
     }
 
@@ -88,12 +88,12 @@ class BookServiceTest
         Users user = userRepository.findById(1L).orElse(null);
         Book book = Book.createBook(createBookRequest, user);
 
-        bookRepository.save(book);
+        bookJpaRepository.save(book);
 
         UpdateBookRequest updateBookRequest = new UpdateBookRequest();
         updateBookRequest.setName("updatedName");
 
-        Optional<Book> findBook = bookRepository.findById(book.getId());
+        Optional<Book> findBook = bookJpaRepository.findById(book.getId());
 
         // when
         findBook.ifPresent(b ->
@@ -116,16 +116,16 @@ class BookServiceTest
 
         Book book = Book.createBook(createBookRequest, user);
 
-        bookRepository.save(book);
+        bookJpaRepository.save(book);
 
 
         // when
-        bookRepository.findById(bookId).ifPresentOrElse(
-            bookRepository::delete, () -> {
+        bookJpaRepository.findById(bookId).ifPresentOrElse(
+            bookJpaRepository::delete, () -> {
                 throw new IllegalArgumentException("해당 책이 존재하지 않습니다.");
             });
         // then
-        assertThat(bookRepository.findById(bookId).isEmpty()).isTrue();
+        assertThat(bookJpaRepository.findById(bookId).isEmpty()).isTrue();
     }
 
     @DisplayName("책 삭제 실패 - 다른 ID로 삭제 시도")
@@ -138,15 +138,15 @@ class BookServiceTest
 
         Book book = Book.createBook(createBookRequest, user);
 
-        bookRepository.save(book);
+        bookJpaRepository.save(book);
 
         // when
         Long otherBookId = 2L;
-        bookRepository.findById(otherBookId).ifPresentOrElse(
-            bookRepository::delete, () -> {
+        bookJpaRepository.findById(otherBookId).ifPresentOrElse(
+            bookJpaRepository::delete, () -> {
                 throw new IllegalArgumentException("해당 책이 존재하지 않습니다.");
             });
         // then
-        assertThat(bookRepository.findById(bookId).isEmpty()).isFalse();
+        assertThat(bookJpaRepository.findById(bookId).isEmpty()).isFalse();
     }
 }

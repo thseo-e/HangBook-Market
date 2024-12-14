@@ -38,7 +38,7 @@ public class Users
         this.ldapId = ldapId;
     }
 
-    public static Users createUser(LoginRequest request)
+    public static Users createdUser(LoginRequest request)
     {
         return Users.builder()
             .ldapId(request.getUserId())

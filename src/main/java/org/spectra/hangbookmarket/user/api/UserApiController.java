@@ -1,5 +1,6 @@
 package org.spectra.hangbookmarket.user.api;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.spectra.hangbookmarket.user.api.dto.UserApiDto;
@@ -9,17 +10,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserApiController
 {
     private final UserService userService;
 
-    @GetMapping("/my")
-    public String getUserInfo(HttpSession session)
+    @Operation(summary = "내가 대여한 책 정보", description = "내가 대여한 책 정보를 조회합니다.")
+    @GetMapping("/rented")
+    public String myRentedInfo(HttpSession session)
     {
-        UserApiDto user = userService.getUserInfo((Long) session.getAttribute("userId"));
+        //TODO : 세션에서 유저 정보를 가져와서 대여한 책 정보를 조회하는 로직을 구현해주세요.
 
-        return user.getName();
+        return "my rented info";
     }
 }

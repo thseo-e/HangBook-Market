@@ -21,7 +21,7 @@ public class Sharing
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users createUser;
+    private Users createdUser;
 
 
     @OneToMany(mappedBy = "sharing")

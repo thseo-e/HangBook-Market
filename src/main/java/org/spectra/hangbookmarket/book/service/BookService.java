@@ -5,7 +5,7 @@ import org.spectra.hangbookmarket.book.api.dto.BookApiResponse;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.book.domain.Book;
-import org.spectra.hangbookmarket.book.repository.BookRepository;
+import org.spectra.hangbookmarket.book.repository.BookJpaRepository;
 import org.spectra.hangbookmarket.user.domain.Users;
 import org.spectra.hangbookmarket.user.service.UserService;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BookService
 {
-    private final BookRepository bookRepository;
+    private final BookJpaRepository bookJpaRepository;
     private final UserService userService;
 
 
@@ -26,7 +26,7 @@ public class BookService
     {
         Users user = userService.findUser(createBookRequest.getUserId());
 
-        Book savedBook = bookRepository.save(Book.createBook(createBookRequest, user));
+        Book savedBook = bookJpaRepository.save(Book.createBook(createBookRequest, user));
 
         return savedBook.getId();
     }
@@ -34,7 +34,7 @@ public class BookService
     @Transactional(readOnly = true)
     public BookApiResponse getBook(Long bookId)
     {
-        Book book = bookRepository.findById(bookId).orElseThrow(() ->
+        Book book = bookJpaRepository.findById(bookId).orElseThrow(() ->
             new IllegalArgumentException("해당 책이 존재하지 않습니다.")
         );
 
@@ -43,21 +43,21 @@ public class BookService
 
     public Long updateBook(UpdateBookRequest updateBookRequest)
     {
-        Book findBook = bookRepository.findById(updateBookRequest.getId()).orElseThrow(() ->
+        Book findBook = bookJpaRepository.findById(updateBookRequest.getId()).orElseThrow(() ->
             new IllegalArgumentException("해당 책이 존재하지 않습니다.")
         );
 
-        Users updateUser = userService.findUser(updateBookRequest.getUserId());
+        Users updatedUser = userService.findUser(updateBookRequest.getUserId());
 
-        findBook.updateBook(updateBookRequest, updateUser);
+        findBook.updateBook(updateBookRequest, updatedUser);
 
         return findBook.getId();
     }
 
     public void deleteBook(Long bookId)
     {
-        bookRepository.findById(bookId).ifPresentOrElse(
-            bookRepository::delete, () -> {
+        bookJpaRepository.findById(bookId).ifPresentOrElse(
+            bookJpaRepository::delete, () -> {
             throw new IllegalArgumentException("해당 책이 존재하지 않습니다.");
         });
     }
