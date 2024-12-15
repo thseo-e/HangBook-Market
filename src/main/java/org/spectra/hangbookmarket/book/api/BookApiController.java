@@ -6,10 +6,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.spectra.hangbookmarket.book.api.dto.BookApiResponse;
+import org.spectra.hangbookmarket.book.api.dto.BookDto;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.book.service.BookService;
+import org.spectra.hangbookmarket.book.service.RentService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookApiController
 {
     private final BookService bookService;
+    private final RentService rentService;
 
     @Operation(summary = "책 등록", description = "책을 등록합니다.")
     @Parameter(name = "createBookRequest", description = "책 등록 요청", required = true)
@@ -44,7 +46,7 @@ public class BookApiController
     @Parameter(name = "bookId", description = "책 ID", required = true)
     @ApiResponse(responseCode = "200", description = "책 조회 성공")
     @GetMapping("/{bookId}")
-    public BookApiResponse getBook(@PathVariable Long bookId)
+    public BookDto getBook(@PathVariable Long bookId)
     {
         return bookService.getBook(bookId);
     }
@@ -79,6 +81,10 @@ public class BookApiController
     public String rentBook(@PathVariable Long bookId, HttpSession session)
     {
         //TODO: 책 대여 로직 추가
+        /*
+        * 대
+        * */
+        rentService.rentBook(bookId, (Long) session.getAttribute("userId"));
         return "rent book";
     }
 

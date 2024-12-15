@@ -1,9 +1,5 @@
 package org.spectra.hangbookmarket.rent.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.spectra.hangbookmarket.book.domain.Book;
 import org.spectra.hangbookmarket.user.domain.Users;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -50,5 +50,9 @@ public class Rent
         this.book.addAll(book);
         this.rentedUser = rentedUser;
         this.updatedUser = rentedUser;
+        this.status = RentStatus.RENTED;
+        this.rentDate = LocalDateTime.now();
+        this.dueDate = LocalDateTime.now().plusDays(14);
+
     }
 }

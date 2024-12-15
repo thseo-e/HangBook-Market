@@ -1,7 +1,7 @@
 package org.spectra.hangbookmarket.book.service;
 
 import lombok.RequiredArgsConstructor;
-import org.spectra.hangbookmarket.book.api.dto.BookApiResponse;
+import org.spectra.hangbookmarket.book.api.dto.BookDto;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.book.domain.Book;
@@ -32,13 +32,13 @@ public class BookService
     }
 
     @Transactional(readOnly = true)
-    public BookApiResponse getBook(Long bookId)
+    public BookDto getBook(Long bookId)
     {
         Book book = bookJpaRepository.findById(bookId).orElseThrow(() ->
             new IllegalArgumentException("해당 책이 존재하지 않습니다.")
         );
 
-        return BookApiResponse.of(book);
+        return BookDto.of(book);
     }
 
     public Long updateBook(UpdateBookRequest updateBookRequest)

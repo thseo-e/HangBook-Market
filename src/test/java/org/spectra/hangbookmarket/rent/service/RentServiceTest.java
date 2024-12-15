@@ -17,6 +17,7 @@ import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.domain.Book;
 import org.spectra.hangbookmarket.book.domain.BookStatus;
 import org.spectra.hangbookmarket.book.repository.BookJpaRepository;
+import org.spectra.hangbookmarket.book.service.RentService;
 import org.spectra.hangbookmarket.rent.api.RentApiRequest;
 import org.spectra.hangbookmarket.rent.domain.Rent;
 import org.spectra.hangbookmarket.rent.repository.RentJpaRepository;

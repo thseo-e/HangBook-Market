@@ -12,7 +12,7 @@ import org.spectra.hangbookmarket.book.domain.BookStatus;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class BookApiResponse
+public class BookDto
 {
     private Long id;
 
@@ -33,7 +33,7 @@ public class BookApiResponse
     private BookStatus status;
 
     @Builder
-    public BookApiResponse(Long id, String name, Long createdUserId, String createdUserName, LocalDateTime createdDate, Long updatedUserId, String updatedUserName, LocalDateTime updatedDate, BookStatus status)
+    public BookDto(Long id, String name, Long createdUserId, String createdUserName, LocalDateTime createdDate, Long updatedUserId, String updatedUserName, LocalDateTime updatedDate, BookStatus status)
     {
         this.id = id;
         this.name = name;
@@ -46,9 +46,9 @@ public class BookApiResponse
         this.status = status;
     }
 
-    public static BookApiResponse of(Book book)
+    public static BookDto of(Book book)
     {
-        return BookApiResponse.builder()
+        return BookDto.builder()
                 .id(book.getId())
                 .name(book.getName())
                 .createdUserId(book.getCreatedUser().getId())
