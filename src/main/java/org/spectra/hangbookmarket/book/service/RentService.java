@@ -2,14 +2,15 @@ package org.spectra.hangbookmarket.book.service;
 
 import lombok.RequiredArgsConstructor;
 import org.spectra.hangbookmarket.book.api.dto.BookDto;
-import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
+import org.spectra.hangbookmarket.book.domain.Book;
 import org.spectra.hangbookmarket.book.domain.BookStatus;
-import org.spectra.hangbookmarket.rent.domain.Rent;
-import org.spectra.hangbookmarket.rent.repository.RentJpaRepository;
+import org.spectra.hangbookmarket.book.repository.RentJpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RentService
 {
     private final RentJpaRepository rentJpaRepository;
@@ -21,21 +22,22 @@ public class RentService
     *   도서 상태 변경 -> 대여중
     *   대여한 내역 기록 (유저, 날짜,
     * */
+    @Transactional
     public void rentBook(Long bookId, Long userId)
     {
-        BookDto bookDto = bookService.getBook(bookId);
+        Book book = bookService.getBookEntity(bookId);
 
-        if (bookDto.getStatus() == BookStatus.RENTED) {
+        if (isRented(book)) {
             //TODO 이미 대여중인 도서 처리
         }
 
-        UpdateBookRequest updateBookRequest = new UpdateBookRequest();
+        book.rented();
 
 
-        bookService.updateBook();
 
-        Rent
+    }
 
-        rentJpaRepository.
+    private static boolean isRented(Book book) {
+        return book.getStatus() == BookStatus.RENTED;
     }
 }

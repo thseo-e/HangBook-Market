@@ -11,7 +11,7 @@ import org.spectra.hangbookmarket.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class BookService
@@ -31,14 +31,20 @@ public class BookService
         return savedBook.getId();
     }
 
-    @Transactional(readOnly = true)
-    public BookDto getBook(Long bookId)
+    public BookDto getBookDto(Long bookId)
     {
         Book book = bookJpaRepository.findById(bookId).orElseThrow(() ->
             new IllegalArgumentException("해당 책이 존재하지 않습니다.")
         );
 
         return BookDto.of(book);
+    }
+
+    public Book getBookEntity(Long bookId)
+    {
+        return bookJpaRepository.findById(bookId).orElseThrow(() ->
+                new IllegalArgumentException("해당 책이 존재하지 않습니다.")
+        );
     }
 
     public Long updateBook(UpdateBookRequest updateBookRequest)

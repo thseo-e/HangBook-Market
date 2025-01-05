@@ -48,7 +48,7 @@ public class BookApiController
     @GetMapping("/{bookId}")
     public BookDto getBook(@PathVariable Long bookId)
     {
-        return bookService.getBook(bookId);
+        return bookService.getBookDto(bookId);
     }
 
     @Operation(summary = "책 수정", description = "책을 수정합니다.")

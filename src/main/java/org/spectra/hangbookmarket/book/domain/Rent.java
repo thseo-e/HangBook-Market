@@ -1,11 +1,10 @@
-package org.spectra.hangbookmarket.rent.domain;
+package org.spectra.hangbookmarket.book.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.spectra.hangbookmarket.book.domain.Book;
 import org.spectra.hangbookmarket.user.domain.Users;
 
 import java.time.LocalDateTime;

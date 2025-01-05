@@ -1,7 +1,6 @@
 package org.spectra.hangbookmarket.book.domain;
 
 import java.time.LocalDateTime;
-import java.util.function.Consumer;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
-import org.spectra.hangbookmarket.rent.domain.Rent;
 import org.spectra.hangbookmarket.user.domain.Users;
 
 @Entity
@@ -84,6 +82,11 @@ public class Book
     public void updateStatus(BookStatus bookStatus)
     {
         this.status = bookStatus;
+    }
+
+
+    public void rented() {
+        this.status = BookStatus.RENTED;
     }
 
 

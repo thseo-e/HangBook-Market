@@ -1,4 +1,4 @@
-package org.spectra.hangbookmarket.rent.domain;
+package org.spectra.hangbookmarket.book.domain;
 
 public enum RentStatus
 {
