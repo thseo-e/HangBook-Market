@@ -1,10 +1,12 @@
 package org.spectra.hangbookmarket.book.service;
 
 import lombok.RequiredArgsConstructor;
-import org.spectra.hangbookmarket.book.api.dto.BookDto;
 import org.spectra.hangbookmarket.book.domain.Book;
-import org.spectra.hangbookmarket.book.domain.BookStatus;
+import org.spectra.hangbookmarket.book.domain.Rent;
 import org.spectra.hangbookmarket.book.repository.RentJpaRepository;
+import org.spectra.hangbookmarket.exception.book.BookRentedAlreadyException;
+import org.spectra.hangbookmarket.user.domain.Users;
+import org.spectra.hangbookmarket.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,8 @@ public class RentService
 {
     private final RentJpaRepository rentJpaRepository;
     private final BookService bookService;
+    private final UserService userService;
+
     /*
     * 대여 로직
     * 도서가 빌릴 수 있는 상태인지 확인. ->
@@ -23,21 +27,16 @@ public class RentService
     *   대여한 내역 기록 (유저, 날짜,
     * */
     @Transactional
-    public void rentBook(Long bookId, Long userId)
+    public Long rentBook(Long bookId, Long userId) throws Exception
     {
         Book book = bookService.getBookEntity(bookId);
+        Users user = userService.findUser(userId);
 
-        if (isRented(book)) {
-            //TODO 이미 대여중인 도서 처리
+        if (book.isRented()) {
+            throw new BookRentedAlreadyException(bookId);
         }
 
-        book.rented();
-
-
-
+        return rentJpaRepository.save(Rent.rented(book, user)).getId();
     }
 
-    private static boolean isRented(Book book) {
-        return book.getStatus() == BookStatus.RENTED;
-    }
 }

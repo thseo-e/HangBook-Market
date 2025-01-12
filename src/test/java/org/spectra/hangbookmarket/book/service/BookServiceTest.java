@@ -61,7 +61,7 @@ class BookServiceTest
         Book savedBook = bookJpaRepository.save(book);
 
         // then
-        assertThat(savedBook.getName()).isEqualTo(createBookRequest.getName());
+        assertThat(savedBook.getTitle()).isEqualTo(createBookRequest.getTitle());
     }
 
     @DisplayName("책 등록 실패 - 이름이 없는 경우")
@@ -72,7 +72,7 @@ class BookServiceTest
         Users user = userRepository.findById(1L).orElse(null);
 
         // when
-        createBookRequest.setName(null);
+        createBookRequest.setTitle(null);
         Book book = Book.createBook(createBookRequest, user);
 
         assertThrows(DataIntegrityViolationException.class, () -> bookJpaRepository.save(book), "책 등록 성공");
@@ -91,7 +91,7 @@ class BookServiceTest
         bookJpaRepository.save(book);
 
         UpdateBookRequest updateBookRequest = new UpdateBookRequest();
-        updateBookRequest.setName("updatedName");
+        updateBookRequest.setTitle("updatedName");
 
         Optional<Book> findBook = bookJpaRepository.findById(book.getId());
 
@@ -102,7 +102,7 @@ class BookServiceTest
 
         // then
         assertThat(book.getId()).isEqualTo(findBook.get().getId());
-        assertThat(book.getName()).isNotEqualTo(findBook.get().getName());
+        assertThat(book.getTitle()).isNotEqualTo(findBook.get().getTitle());
 
     }
 

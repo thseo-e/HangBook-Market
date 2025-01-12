@@ -1,15 +1,18 @@
 package org.spectra.hangbookmarket.book.domain;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.user.domain.Users;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,24 +22,27 @@ public class Book
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
+    @Comment("책 번호")
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "title", nullable = false)
+    @Comment("책 제목")
+    private String title;
+
+    @OneToMany(mappedBy = "book")
+    @Column(name = "rented_history")
+    @Comment("책 대여 기록")
+    private final List<Rent> rentedHistory = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rent_id")
-    private Rent rent;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "create_user_id")
+    @JoinColumn(name = "created_user")
     private Users createdUser;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "update_user_id")
+    @JoinColumn(name = "updated_user")
     private Users updatedUser;
 
     @Column(name = "updated_date")
@@ -44,13 +50,14 @@ public class Book
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
+    @Comment("대여가능/대여중")
     private BookStatus status;
 
     @Builder
-    private Book(Long id, String name, Users createdUser, LocalDateTime createdDate, Users updatedUser, LocalDateTime updatedDate, BookStatus status)
+    private Book(Long id, String title, Users createdUser, LocalDateTime createdDate, Users updatedUser, LocalDateTime updatedDate, BookStatus status)
     {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.createdUser = createdUser;
         this.createdDate = createdDate;
         this.updatedUser = updatedUser;
@@ -61,7 +68,7 @@ public class Book
     public static Book createBook(CreateBookRequest createBookRequest, Users createdUser)
     {
         return Book.builder()
-            .name(createBookRequest.getName())
+            .title(createBookRequest.getTitle())
             .createdUser(createdUser)
             .createdDate(LocalDateTime.now())
             .updatedUser(createdUser)
@@ -73,7 +80,7 @@ public class Book
 
     public void updateBook(UpdateBookRequest request, Users updatedUser)
     {
-        this.name = request.getName();
+        this.title = request.getTitle();
         this.updatedUser = updatedUser;
         this.updatedDate = LocalDateTime.now();
         this.status = request.getStatus();
@@ -85,8 +92,13 @@ public class Book
     }
 
 
-    public void rented() {
+    public void rented(Rent rent) {
         this.status = BookStatus.RENTED;
+        this.rentedHistory.add(rent);
+    }
+
+    public boolean isRented() {
+        return this.status == BookStatus.RENTED;
     }
 
 

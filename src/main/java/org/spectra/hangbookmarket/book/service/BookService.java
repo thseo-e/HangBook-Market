@@ -1,13 +1,16 @@
 package org.spectra.hangbookmarket.book.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.spectra.hangbookmarket.book.api.dto.BookDto;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.book.domain.Book;
 import org.spectra.hangbookmarket.book.repository.BookJpaRepository;
+import org.spectra.hangbookmarket.exception.book.BookNotFoundException;
 import org.spectra.hangbookmarket.user.domain.Users;
 import org.spectra.hangbookmarket.user.service.UserService;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,26 +34,24 @@ public class BookService
         return savedBook.getId();
     }
 
-    public BookDto getBookDto(Long bookId)
+    public BookDto getBookDto(Long bookId) throws BookNotFoundException
     {
         Book book = bookJpaRepository.findById(bookId).orElseThrow(() ->
-            new IllegalArgumentException("해당 책이 존재하지 않습니다.")
+            new BookNotFoundException(bookId)
         );
 
         return BookDto.of(book);
     }
 
-    public Book getBookEntity(Long bookId)
-    {
+    public Book getBookEntity(Long bookId) throws BookNotFoundException {
         return bookJpaRepository.findById(bookId).orElseThrow(() ->
-                new IllegalArgumentException("해당 책이 존재하지 않습니다.")
+                new BookNotFoundException(bookId)
         );
     }
 
-    public Long updateBook(UpdateBookRequest updateBookRequest)
-    {
+    public Long updateBook(UpdateBookRequest updateBookRequest) throws BookNotFoundException {
         Book findBook = bookJpaRepository.findById(updateBookRequest.getId()).orElseThrow(() ->
-            new IllegalArgumentException("해당 책이 존재하지 않습니다.")
+                new BookNotFoundException(updateBookRequest.getId())
         );
 
         Users updatedUser = userService.findUser(updateBookRequest.getUserId());
