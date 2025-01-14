@@ -49,6 +49,10 @@ public class Rent
     @Comment("반납 예정일")
     private LocalDateTime dueDate;
 
+    @Column(name = "returned_date")
+    @Comment("반납일")
+    private LocalDateTime returnedDate;
+
     @Builder
     public Rent(Book book, Users rentedUser)
     {
@@ -72,5 +76,14 @@ public class Rent
         rentedUser.addRentedHistory(rent);
 
         return rent;
+    }
+
+    public void returned() {
+        this.status = RentStatus.RETURNED;
+        this.returnedDate = LocalDateTime.now();
+
+        this.book.returned(this);
+        this.rentedUser.addRentedHistory(this);
+
     }
 }

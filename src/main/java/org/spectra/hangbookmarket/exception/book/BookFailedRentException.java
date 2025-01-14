@@ -5,16 +5,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BookRentedAlreadyException extends Exception{
+public class BookFailedRentException extends Exception{
 
     private Long bookId;
 
-    public BookRentedAlreadyException(Long bookId) {
+    public BookFailedRentException(Long bookId) {
         super("This Book is Already Rented. - " + bookId);
         this.bookId = bookId;
     }
 
-    public BookRentedAlreadyException(String message) {
+    public BookFailedRentException(String message) {
         super(message);
     }
 }

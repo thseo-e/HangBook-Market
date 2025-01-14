@@ -95,22 +95,4 @@ public class BookApiController
         }
     }
 
-    @Operation(summary = "책 반납", description = "책을 반납합니다.")
-    @Parameter(name = "bookId", description = "반납할 책의 ID", required = true)
-    @PostMapping("/{bookId}/return")
-    public String returnBook(@PathVariable(name = "bookId") Long bookId, HttpSession session)
-    {
-        //TODO: 책 반납 로직 추가
-        return "return book";
-    }
-
-    @Operation(summary = "책 반납일자 연장", description = "책의 반납일자를 연장합니다.")
-    @Parameter(name = "bookId", description = "반납일자를 연장할 책의 ID", required = true)
-    @PostMapping("/{bookId}/extend")
-    public String extendBook(@PathVariable(name = "bookId") Long bookId, HttpSession session)
-    {
-        //TODO: 책 반납일자 연장 로직 추가
-        return "extend book";
-    }
-
 }

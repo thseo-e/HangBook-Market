@@ -102,4 +102,8 @@ public class Book
     }
 
 
+    public void returned(Rent rent) {
+        this.status = BookStatus.AVAILABLE;
+        this.rentedHistory.add(rent);
+    }
 }
