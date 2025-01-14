@@ -1,15 +1,16 @@
 package org.spectra.hangbookmarket.user.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
+import org.spectra.hangbookmarket.book.domain.Rent;
 import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,7 +19,7 @@ public class Users
 {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -29,6 +30,11 @@ public class Users
 
     @Column(name = "ldap_id", nullable = false)
     private String ldapId;
+
+    @OneToMany(mappedBy = "rentedUser")
+    @Column(name = "rented_history")
+    @Comment("대여기록")
+    private final List<Rent> rentedHistory = new ArrayList<>();
 
     @Builder
     public Users(String name, String password, String ldapId)
@@ -45,5 +51,9 @@ public class Users
             .name(request.getUserId())
             .password(request.getPasswd())
             .build();
+    }
+
+    public void addRentedHistory(Rent rent) {
+        this.rentedHistory.add(rent);
     }
 }

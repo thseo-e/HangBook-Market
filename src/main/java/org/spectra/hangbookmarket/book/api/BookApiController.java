@@ -11,14 +11,10 @@ import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.book.service.BookService;
 import org.spectra.hangbookmarket.book.service.RentService;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.spectra.hangbookmarket.common.api.CommonApiResponse;
+import org.spectra.hangbookmarket.exception.book.BookNotFoundException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "책 API", description = "책에 대한 API")
 @RestController
@@ -46,17 +42,28 @@ public class BookApiController
     @Parameter(name = "bookId", description = "책 ID", required = true)
     @ApiResponse(responseCode = "200", description = "책 조회 성공")
     @GetMapping("/{bookId}")
-    public BookDto getBook(@PathVariable Long bookId)
+    public ResponseEntity<CommonApiResponse<BookDto>> getBook(@PathVariable("bookId") Long bookId)
     {
-        return bookService.getBook(bookId);
+        try {
+            BookDto bookDto = bookService.getBookDto(bookId);
+
+            return ResponseEntity.ok(
+                        CommonApiResponse.success(bookDto, "success")
+                    );
+
+        }
+        catch (Exception e) {
+            return ResponseEntity
+                    .status(400)
+                    .body(CommonApiResponse.fail(e.getMessage()));
+        }
     }
 
     @Operation(summary = "책 수정", description = "책을 수정합니다.")
     @Parameter(name = "updateBookRequest", description = "책 수정 요청", required = true)
     @ApiResponse(responseCode = "200", description = "책 수정 성공")
     @PutMapping
-    public String updateBook(@RequestBody UpdateBookRequest updateBookRequest, HttpSession session)
-    {
+    public String updateBook(@RequestBody UpdateBookRequest updateBookRequest, HttpSession session) throws BookNotFoundException {
         updateBookRequest.setUserId((Long) session.getAttribute("userId"));
 
         Long bookId = bookService.updateBook(updateBookRequest);
@@ -68,7 +75,7 @@ public class BookApiController
     @Parameter(name = "bookId", description = "책 ID", required = true)
     @ApiResponse(responseCode = "200", description = "책 삭제 성공")
     @DeleteMapping("/{bookId}")
-    public String deleteBook(@PathVariable Long bookId)
+    public String deleteBook(@PathVariable(name = "bookId") Long bookId)
     {
         bookService.deleteBook(bookId);
 
@@ -78,20 +85,20 @@ public class BookApiController
     @Operation(summary = "책 대여", description = "책을 대여합니다.")
     @Parameter(name = "bookId", description = "대여할 책의 ID", required = true)
     @PostMapping("/{bookId}/rent")
-    public String rentBook(@PathVariable Long bookId, HttpSession session)
-    {
-        //TODO: 책 대여 로직 추가
-        /*
-        * 대
-        * */
-        rentService.rentBook(bookId, (Long) session.getAttribute("userId"));
-        return "rent book";
+    public ResponseEntity<String> rentBook(@PathVariable(name = "bookId") Long bookId, HttpSession session) throws Exception {
+        try {
+            Long rentedId = rentService.rentBook(bookId, (Long) session.getAttribute("userId"));
+
+            return ResponseEntity.ok("Rent Book Success. rentID : " + rentedId);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @Operation(summary = "책 반납", description = "책을 반납합니다.")
     @Parameter(name = "bookId", description = "반납할 책의 ID", required = true)
     @PostMapping("/{bookId}/return")
-    public String returnBook(@PathVariable Long bookId, HttpSession session)
+    public String returnBook(@PathVariable(name = "bookId") Long bookId, HttpSession session)
     {
         //TODO: 책 반납 로직 추가
         return "return book";
@@ -100,7 +107,7 @@ public class BookApiController
     @Operation(summary = "책 반납일자 연장", description = "책의 반납일자를 연장합니다.")
     @Parameter(name = "bookId", description = "반납일자를 연장할 책의 ID", required = true)
     @PostMapping("/{bookId}/extend")
-    public String extendBook(@PathVariable Long bookId, HttpSession session)
+    public String extendBook(@PathVariable(name = "bookId") Long bookId, HttpSession session)
     {
         //TODO: 책 반납일자 연장 로직 추가
         return "extend book";

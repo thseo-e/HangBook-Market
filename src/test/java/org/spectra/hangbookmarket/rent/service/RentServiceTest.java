@@ -1,12 +1,6 @@
 package org.spectra.hangbookmarket.rent.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import org.apache.ibatis.javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,16 +9,24 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.domain.Book;
-import org.spectra.hangbookmarket.book.domain.BookStatus;
+import org.spectra.hangbookmarket.book.domain.Rent;
 import org.spectra.hangbookmarket.book.repository.BookJpaRepository;
+import org.spectra.hangbookmarket.book.repository.RentJpaRepository;
+import org.spectra.hangbookmarket.book.service.BookService;
 import org.spectra.hangbookmarket.book.service.RentService;
-import org.spectra.hangbookmarket.rent.api.RentApiRequest;
-import org.spectra.hangbookmarket.rent.domain.Rent;
-import org.spectra.hangbookmarket.rent.repository.RentJpaRepository;
+import org.spectra.hangbookmarket.exception.book.BookNotFoundException;
+import org.spectra.hangbookmarket.exception.book.BookRentedAlreadyException;
 import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
 import org.spectra.hangbookmarket.user.domain.Users;
+import org.spectra.hangbookmarket.user.service.UserService;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+//@Transactional
 @SpringBootTest
 class RentServiceTest
 {
@@ -33,6 +35,12 @@ class RentServiceTest
 
     @Mock
     BookJpaRepository bookJpaRepository;
+
+    @Mock
+    BookService bookService;
+
+    @Mock
+    UserService userService;
 
     @InjectMocks
     RentService rentService;
@@ -56,51 +64,38 @@ class RentServiceTest
 
         for (int i = 1; i <= 5; i++)
         {
-            createBookRequestList.add(new CreateBookRequest("테스트 주도 개발 시작하기 " + i, user.getId()));
+            bookService.createBook(new CreateBookRequest("테스트 주도 개발 시작하기 " + i, user.getId()));
         }
-
     }
 
-    protected void rentFlow(Book book) {
-        if (book.getStatus() == BookStatus.AVAILABLE) {
-            book.updateStatus(BookStatus.RENTED);
-
-            Rent rent = Rent.builder()
-                .book(book)
-                .user(user)
-                .build();
-            rentJpaRepository.save(rent);
-        }
-
-
+    @BeforeEach
+    void checkInitData() throws BookNotFoundException {
+        bookService.getBookDto(1L);
     }
+
+
+
     @DisplayName("도서가 대여 가능한 상태면 대여 할 수 있다.")
     @Test
-    void rentBookSuccess()
-    {
-        // given
-        // Rent DTO로 받아옴
-        // Rent는 대여 할 사람 / 대여 할 책 을 가지고 있음.
-        RentApiRequest rentApiRequest = new RentApiRequest(1L, 1L);
+    void rentBookSuccess() throws Exception {
+        //given
+        Long bookId = 1L;
+        Long userId = 1L;
+        Book book = bookService.getBookEntity(bookId);
+        Users user = userService.findUser(userId);
 
-        Book book = Book.createBook(createBookRequestList.get(0), user);
+        if (book.isRented()) {
+            //TODO 이미 대여중인 도서 처리
+            throw new BookRentedAlreadyException(bookId);
+        }
 
-        when(bookJpaRepository.findById(rentApiRequest.getBookId())).thenReturn(Optional.of(book));
+        Long rentedId = rentJpaRepository.save(Rent.rented(book, user)).getId();
 
-        // when
-        // 책이 존재하는지 확인.
-        // 책이 대여 가능한지 확인.
-        // 대여 가능하면 대여 처리.
-        bookJpaRepository.findById(rentApiRequest.getBookId())
-            .ifPresent();
+        rentJpaRepository.findById(rentedId).ifPresent(rent -> {
+            assertThat(rent.getBook().getId()).isEqualTo(bookId);
+        });
 
 
-
-        // then
-        assertThat(actual).isEqualTo(expected);
     }
-
-    @DisplayName("도서가 대여 불가능한 상태면 대여 할 수 없다.")
-    @Test
 
 }

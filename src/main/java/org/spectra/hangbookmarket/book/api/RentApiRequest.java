@@ -1,4 +1,4 @@
-package org.spectra.hangbookmarket.rent.api;
+package org.spectra.hangbookmarket.book.api;
 
 import lombok.Getter;
 import lombok.Setter;
