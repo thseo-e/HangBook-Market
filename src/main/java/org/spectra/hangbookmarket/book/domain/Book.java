@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
+import org.spectra.hangbookmarket.rent.domain.Rent;
 import org.spectra.hangbookmarket.user.domain.Users;
 
 import java.time.LocalDateTime;

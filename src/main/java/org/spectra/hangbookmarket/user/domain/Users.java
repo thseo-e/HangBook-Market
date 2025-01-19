@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-import org.spectra.hangbookmarket.book.domain.Rent;
+import org.spectra.hangbookmarket.rent.domain.Rent;
 import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
 
 import java.util.ArrayList;

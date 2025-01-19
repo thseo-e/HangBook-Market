@@ -1,7 +1,5 @@
 package org.spectra.hangbookmarket.user.service;
 
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import org.spectra.hangbookmarket.user.api.dto.UserApiDto;
 import org.spectra.hangbookmarket.user.domain.Users;

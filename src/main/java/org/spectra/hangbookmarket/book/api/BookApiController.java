@@ -10,9 +10,8 @@ import org.spectra.hangbookmarket.book.api.dto.BookDto;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
 import org.spectra.hangbookmarket.book.api.dto.UpdateBookRequest;
 import org.spectra.hangbookmarket.book.service.BookService;
-import org.spectra.hangbookmarket.book.service.RentService;
+import org.spectra.hangbookmarket.rent.service.RentService;
 import org.spectra.hangbookmarket.common.api.CommonApiResponse;
-import org.spectra.hangbookmarket.exception.book.BookNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +62,7 @@ public class BookApiController
     @Parameter(name = "updateBookRequest", description = "책 수정 요청", required = true)
     @ApiResponse(responseCode = "200", description = "책 수정 성공")
     @PutMapping
-    public String updateBook(@RequestBody UpdateBookRequest updateBookRequest, HttpSession session) throws BookNotFoundException {
+    public String updateBook(@RequestBody UpdateBookRequest updateBookRequest, HttpSession session) {
         updateBookRequest.setUserId((Long) session.getAttribute("userId"));
 
         Long bookId = bookService.updateBook(updateBookRequest);
@@ -85,7 +84,7 @@ public class BookApiController
     @Operation(summary = "책 대여", description = "책을 대여합니다.")
     @Parameter(name = "bookId", description = "대여할 책의 ID", required = true)
     @PostMapping("/{bookId}/rent")
-    public ResponseEntity<String> rentBook(@PathVariable(name = "bookId") Long bookId, HttpSession session) throws Exception {
+    public ResponseEntity<String> rentBook(@PathVariable(name = "bookId") Long bookId, HttpSession session) {
         try {
             Long rentedId = rentService.rentBook(bookId, (Long) session.getAttribute("userId"));
 

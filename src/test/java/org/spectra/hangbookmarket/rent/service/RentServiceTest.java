@@ -7,14 +7,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.spectra.hangbookmarket.book.api.dto.CreateBookRequest;
+import org.spectra.hangbookmarket.book.common.exception.BookErrorType;
+import org.spectra.hangbookmarket.book.common.exception.BookException;
 import org.spectra.hangbookmarket.book.domain.Book;
-import org.spectra.hangbookmarket.book.domain.Rent;
+import org.spectra.hangbookmarket.rent.domain.Rent;
 import org.spectra.hangbookmarket.book.repository.BookJpaRepository;
-import org.spectra.hangbookmarket.book.repository.RentJpaRepository;
+import org.spectra.hangbookmarket.rent.repository.RentJpaRepository;
 import org.spectra.hangbookmarket.book.service.BookService;
-import org.spectra.hangbookmarket.book.service.RentService;
-import org.spectra.hangbookmarket.exception.book.BookNotFoundException;
-import org.spectra.hangbookmarket.exception.book.BookFailedRentException;
 import org.spectra.hangbookmarket.user.api.dto.LoginRequest;
 import org.spectra.hangbookmarket.user.domain.Users;
 import org.spectra.hangbookmarket.user.service.UserService;
@@ -68,14 +67,14 @@ class RentServiceTest {
     }
 
     @BeforeEach
-    void checkInitData() throws BookNotFoundException {
+    void checkInitData() {
         bookService.getBookDto(1L);
     }
 
 
     @DisplayName("도서가 대여 가능한 상태면 대여 할 수 있다.")
     @Test
-    void rentBookSuccess() throws Exception {
+    void rentBookSuccess() {
         //given
         Long bookId = 1L;
         Long userId = 1L;
@@ -84,7 +83,7 @@ class RentServiceTest {
 
         if (book.isRented()) {
             //TODO 이미 대여중인 도서 처리
-            throw new BookFailedRentException(bookId);
+            throw new BookException(BookErrorType.BOOK_RENT_FAIL);
         }
 
         Long rentedId = rentJpaRepository.save(Rent.rented(book, user)).getId();
@@ -97,7 +96,7 @@ class RentServiceTest {
     }
 
     @Test
-    public void testRentBook_Success() throws Exception {
+    public void testRentBook_Success() {
         Long bookId = 1L;
         Long userId = 1L;
         Book book = mock(Book.class);
@@ -116,13 +115,13 @@ class RentServiceTest {
     }
 
     @Test
-    public void testRentBook_Failed() throws BookNotFoundException {
+    public void testRentBook_Failed() {
         Long bookId = 1L;
         Long userId = 1L;
         Book book = mock(Book.class);
         when(bookService.getBookEntity(bookId)).thenReturn(book);
         when(book.isRented()).thenReturn(true);
-        assertThrows(BookFailedRentException.class, () -> rentService.rentBook(bookId, userId));
+        assertThrows(BookException.class, () -> rentService.rentBook(bookId, userId));
     }
 
 }

@@ -1,4 +1,4 @@
-package org.spectra.hangbookmarket.book.domain;
+package org.spectra.hangbookmarket.rent.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.spectra.hangbookmarket.book.domain.Book;
 import org.spectra.hangbookmarket.user.domain.Users;
 
 import java.time.LocalDateTime;
@@ -53,6 +54,12 @@ public class Rent
     @Comment("반납일")
     private LocalDateTime returnedDate;
 
+    @Column(name = "extend_flag")
+    @Comment("반납일 연장 플래그")
+    private boolean extendFlag;
+
+    //TODO 연체 후 반납되었을 때 Flag가 필요할지? 아니면 Status에 추가할지?
+
     @Builder
     public Rent(Book book, Users rentedUser)
     {
@@ -85,5 +92,11 @@ public class Rent
         this.book.returned(this);
         this.rentedUser.addRentedHistory(this);
 
+    }
+
+    public void extendDueDate(Users user) {
+        this.extendFlag = true;
+        this.dueDate = LocalDateTime.now().plusDays(7);
+        this.updatedUser = user;
     }
 }
